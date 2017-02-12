@@ -2,24 +2,38 @@ package main
 
 import (
     "fmt"
-    "time"
+    "sync"
 )
 
 func main() {
 
     channel := make(chan int)
 
+    var waitGroup sync.WaitGroup
+
+    waitGroup.Add(2)
+
     go func() {
 	for i := 0; i < 10; i++ {
 	    channel <- i
 	}
+	waitGroup.Done()
     }()
 
     go func() {
-	for {
-	    fmt.Println(<-channel)
+	for i := 0; i < 10; i++ {
+	    channel <- i
 	}
+	waitGroup.Done()
     }()
-    time.Sleep(time.Second)
+
+    go func() {
+	waitGroup.Wait() //release process
+	close(channel) //close channel
+    }()
+
+    for number := range channel {
+	fmt.Println(number)
+    }
 
 }
