@@ -4,17 +4,28 @@ import (
     "fmt"
     "net/http"
     "html/template"
+    _ "github.com/go-sql-driver/mysql"
+    "database/sql"
 )
 
 type Post struct {
-    Id int
+    Id    int
     Title string
-    Body string
+    Body  string
 }
 
-
+var db, err = sql.Open("mysql", "homestead:secret@(127.0.0.1:33060)/go?charset=utf8")
 
 func main() {
+
+    stmt, err := db.Prepare("insert into posts (title,body) values (?,?);")
+    checkErr(err)
+
+    _ , err = stmt.Exec("My first Post", "My first content")
+    checkErr(err)
+
+    db.Close()
+
 
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 
@@ -32,4 +43,10 @@ func main() {
 
     fmt.Println(http.ListenAndServe(":8080", nil))
 
+}
+
+func checkErr(err error) {
+    if err != nil {
+	panic(err)
+    }
 }
