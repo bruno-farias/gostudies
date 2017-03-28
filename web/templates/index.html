@@ -2,10 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ .Title }}</title>
+    <title>Posts</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 </head>
 <body>
-    <h1>{{ .Title }}</h1>
-    <p>{{ .Body }}</p>
+    <div class="container">
+        <h1>Posts</h1>
+        <table class="table table-bordered">
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Action</th>
+            </tr>
+            {{ range $key, $value := . }}
+            <tr>
+                <td>{{$value.Id}}</td>
+                <td>{{$value.Title}}</td>
+                <td>View post</td>
+            </tr>
+            {{ end }}
+        </table>
+    </div>
 </body>
 </html>

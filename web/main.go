@@ -39,6 +39,8 @@ func main() {
 	fmt.Println(items)
     }
 
+    db.Close()
+
 
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 
@@ -49,7 +51,7 @@ func main() {
 	}
 
 	template := template.Must(template.ParseFiles("templates/index.html"))
-	if error := template.ExecuteTemplate(w, "index.html", post); error != nil {
+	if error := template.ExecuteTemplate(w, "index.html", items); error != nil {
 	    http.Error(w, error.Error(), http.StatusInternalServerError)
 	}
     })
