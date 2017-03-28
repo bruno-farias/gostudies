@@ -18,13 +18,26 @@ var db, err = sql.Open("mysql", "homestead:secret@(127.0.0.1:33060)/go?charset=u
 
 func main() {
 
-    stmt, err := db.Prepare("insert into posts (title,body) values (?,?);")
+    //stmt, err := db.Prepare("insert into posts (title,body) values (?,?);")
+    //checkErr(err)
+	//
+    //_ , err = stmt.Exec("My first Post", "My first content")
+    //checkErr(err)
+	//
+    //db.Close()
+
+
+    rows, err := db.Query("SELECT * FROM posts;")
+    items := []Post{}
     checkErr(err)
 
-    _ , err = stmt.Exec("My first Post", "My first content")
-    checkErr(err)
+    for rows.Next()  {
+	post := Post{}
 
-    db.Close()
+	rows.Scan(&post.Id, &post.Title, &post.Body)
+	items = append(items, post)
+	fmt.Println(items)
+    }
 
 
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
